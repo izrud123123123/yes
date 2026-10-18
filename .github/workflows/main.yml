@@ -1,0 +1,40 @@
+name: Build jar
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find project folder
+        id: find
+        run: |
+          f=$(find . -name build.gradle -not -path './.git/*' | head -n 1)
+          if [ -z "$f" ]; then
+            echo "build.gradle NOT FOUND. Repo contents:"
+            find . -not -path './.git/*' -type f
+            exit 1
+          fi
+          dir=$(dirname "$f")
+          echo "Found project in: $dir"
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 9.3.0
+      - name: Build
+        working-directory: ${{ steps.find.outputs.dir }}
+        run: gradle build --no-daemon
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-visuals-jar
+          path: |
+            ${{ steps.find.outputs.dir }}/build/libs/*.jar
+            !${{ steps.find.outputs.dir }}/build/libs/*-sources.jar
