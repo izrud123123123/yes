@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "aurora_visuals",
+  "version": "${version}",
+  "name": "Aurora Visuals",
+  "description": "Customisable particles, sky and time changer, skeleton ESP and a clean title screen.",
+  "authors": ["You"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": { "client": ["com.aurora.visuals.AuroraClient"] },
+  "mixins": [{ "config": "aurora.mixins.json", "environment": "client" }],
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
